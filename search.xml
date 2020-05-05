@@ -9,8 +9,8 @@
       </categories>
       <tags>
         <tag>C语言</tag>
-        <tag>嵌入式</tag>
         <tag>操作系统</tag>
+        <tag>嵌入式</tag>
       </tags>
   </entry>
   <entry>
@@ -21,8 +21,8 @@
         <category>以太网</category>
       </categories>
       <tags>
-        <tag>以太网</tag>
         <tag>嵌入式</tag>
+        <tag>以太网</tag>
         <tag>IEEE</tag>
       </tags>
   </entry>
@@ -34,8 +34,8 @@
         <category>操作系统</category>
       </categories>
       <tags>
-        <tag>嵌入式</tag>
         <tag>操作系统</tag>
+        <tag>嵌入式</tag>
         <tag>LINUX</tag>
       </tags>
   </entry>
