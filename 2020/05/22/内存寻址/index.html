@@ -1,0 +1,355 @@
+<!DOCTYPE html><html class="theme-next gemini use-motion" lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="google-site-verification" content="45-g1VyGb9eGQvo89MJl_lyuoyMaRscXkYj6WwbYkZA"><meta name="baidu-site-verification" content="uK5ZwIDfsG"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-small.ico?v=5.1.4"><link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222"><meta name="keywords" content="OS,LINUX,内存管理,"><link rel="alternate" href="/atom.xml" title="FAFA'S BLOG" type="application/atom+xml"><meta name="description" content="最近学习《深入理解LINUX内核》内存寻址，本文对此知识做个总结。主要介绍80x86微处理器怎样进行芯片级的内存寻址，Linux(内核版本为2.6.11)又是如何利用寻址硬件的。"><meta property="og:type" content="article"><meta property="og:title" content="内存寻址"><meta property="og:url" content="http://wangzaifa.com/2020/05/22/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/index.html"><meta property="og:site_name" content="FAFA&#39;S BLOG"><meta property="og:description" content="最近学习《深入理解LINUX内核》内存寻址，本文对此知识做个总结。主要介绍80x86微处理器怎样进行芯片级的内存寻址，Linux(内核版本为2.6.11)又是如何利用寻址硬件的。"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589387520566.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589387734163.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589387980105.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589388155747.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589388232757.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389083550.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389156476.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389664483.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389737178.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389882225.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389902637.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589390285399.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589390333940.png"><meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589390513952.png"><meta property="article:published_time" content="2020-05-21T16:59:42.681Z"><meta property="article:modified_time" content="2020-05-20T18:05:39.987Z"><meta property="article:author" content="发发"><meta property="article:tag" content="OS"><meta property="article:tag" content="LINUX"><meta property="article:tag" content="内存管理"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589387520566.png"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Gemini",version:"5.1.4",sidebar:{position:"left",display:"post",offset:12,b2t:!1,scrollpercent:!0,onmobile:!1},fancybox:!0,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},duoshuo:{userId:"0",author:"博主"},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><link rel="canonical" href="http://wangzaifa.com/2020/05/22/内存寻址/"><title>内存寻址 | FAFA'S BLOG</title><meta name="generator" content="Hexo 4.2.0"></head><body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">FAFA'S BLOG</span><span class="logo-line-after"><i></i></span></a></div><h1 class="site-subtitle" itemprop="description">今天的砖格外烫手</h1></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br> 首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br> 关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br> 标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br> 分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br> 归档</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br> 搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="http://wangzaifa.com/2020/05/22/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="name" content="发发"><meta itemprop="description" content><meta itemprop="image" content="/images/bulangxioang.jpeg"></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="FAFA'S BLOG"></span><header class="post-header"><h2 class="post-title" itemprop="name headline">内存寻址</h2><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-22T00:59:42+08:00">2020-05-22</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a></span></span> <span class="post-comments-count"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-comment-o"></i></span><a href="/2020/05/22/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2020/05/22/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" itemprop="commentCount"></span></a></span> <span class="post-meta-divider">|</span><span class="page-pv"><i class="fa fa-file-o"></i><span class="busuanzi-value" id="busuanzi_value_page_pv"></span> 次</span><div class="post-wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">7.6k 字</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">27 分钟</span></div></div></header><div class="post-body" itemprop="articleBody"><p>最近学习《深入理解LINUX内核》内存寻址，本文对此知识做个总结。主要介绍80x86微处理器怎样进行芯片级的内存寻址，Linux(内核版本为2.6.11)又是如何利用寻址硬件的。<br><a id="more"></a></p><h3 id="内存地址："><a href="#内存地址：" class="headerlink" title="内存地址："></a>内存地址：</h3><p><strong>逻辑地址</strong>：包含在机器语言指令中用来指定一个操作数或一条指令的地址。每一个逻辑地址都由一个段（segment）和偏移量（offset）组成。<br><strong>线性地址</strong>：32位无符号整数，可用来表示高达4GB的地址。范围是0x00000000到0xffffffff。<br><strong>物理地址</strong>：用于内存芯片级内存单元寻址。由32位或36位无符号整数表示。</p><p><strong>内存控制单元（MMU）通过一种称为分段单元的硬件电路把一个逻辑地址转换成线性地址；接着，再通过分页单元的硬件电路把线性地址转换成一个物理地址。</strong></p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589387520566.png" alt="逻辑地址转换"></p><h3 id="硬件中的分段"><a href="#硬件中的分段" class="headerlink" title="硬件中的分段"></a>硬件中的分段</h3><h4 id="段标识符"><a href="#段标识符" class="headerlink" title="段标识符"></a>段标识符</h4><p>一个逻辑地址由两部分组成：一个<strong>段标识符</strong>和一个指定段内相对地址的<strong>偏移量</strong>。<br><strong>段标识符</strong>， 段标识符是由一个16位长的字段组成，称为段选择符。其中前13位是一个索引号。后面3位包含一些硬件细节。</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589387734163.png" alt="段选择符格式"></p><p>为了快速方便地找到段选择符，处理器提供段寄存器，段寄存器的唯一目的是存放段选择符。这些段寄存器称为cs、ss、ds、es、fs和gs。尽管只有6个段寄存器，但程序可以把同一个段寄存器用于不同的目的，方法是先将其值保存在内存中，用完后再恢复。</p><p>下面三个段寄存器有专门的用途：</p><blockquote><p><strong>cs：代码段寄存器，指向包含程序指令的段。<br>ss：栈段寄存器，指向包含当前程序栈的段。<br>ds：数据段寄存器，指向包含静态数据或者全局数据段。</strong></p></blockquote><p>其它三个段寄存器作一般用途，可以指向任意的数据段。</p><h4 id="段描述符"><a href="#段描述符" class="headerlink" title="段描述符"></a>段描述符</h4><p>每个段由一个8字节的段描述符表示。它放在全局描述符（GDT）中或局部描述符（LDT）中。有几种不同类型的段和它们的段描述符如下：</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589387980105.png" alt="段描述符格式"></p><p>理解： 段标识符的前13位，直接在段描述符表中找到一个具体的段描述符，这个描述符就描述了一个段。</p><h4 id="快速访问段描述符"><a href="#快速访问段描述符" class="headerlink" title="快速访问段描述符"></a>快速访问段描述符</h4><p>每当一个段选择符被装入段寄存器时，会从段描述符表中选中一个段描述符，由内存装入到非编程CPU寄存器中。</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589388155747.png" alt="段选择符和段描述符"></p><p>Intel设计的本意是，一些全局的段描述符，就放在“<strong>全局段描述符表(GDT)</strong>”中，一些局部的，例如每个进程自己的，就放在所谓的“<strong>局部段描述符表(LDT)</strong>”中。那究竟什么时候该用GDT，什么时候该用LDT呢？这是由段选择符中的T1字段表示的，=0，表示用GDT，=1表示用LDT。</p><p>GDT在内存中的地址和大小存放在CPU的gdtr控制寄存器中，而LDT则在ldtr寄存器中。</p><p>由于段描述符是8字节长，因此它在GDT或LDT内的相对地址是由段选择符的最高13位的值乘以8得到的。例如：如果GDT在0x00020000，且由段选择符所指定的索引号为2，那么相应的段描述符的地址是0x00020000 + ( 2 x 8 ).</p><h4 id="分段单元"><a href="#分段单元" class="headerlink" title="分段单元"></a>分段单元</h4><p>那么逻辑地址是怎样转换成线性地址的？如图所示</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589388232757.png" alt="逻辑地址的转换"></p><p>首先，给定一个完整的逻辑地址[段选择符：段内偏移地址]，</p><blockquote><p><strong>1、看段选择符的T1=0还是1，知道当前要转换是GDT中的段，还是LDT中的段，再根据相应寄存器，得到线性基地址。<br>2、从段选择符的index字段（前13位）计算段描述符的地址，计算公式：index字段的值 x 8(一个段描述符的大小) + 上面的线性基地址。<br>3、把逻辑地址的偏移量offset + 段描述符Base字段的值 = 线性地址。</strong></p></blockquote><p>以上都是基于80x86微处理器描述的，那么Linux是怎么分段的呢？</p><h3 id="Linux中的分段"><a href="#Linux中的分段" class="headerlink" title="Linux中的分段"></a>Linux中的分段</h3><p>Intel要求两次转换，这样虽说是兼容了，但是却是很冗余，呵呵，没办法，硬件要求这样做了，软件就只能照办，怎么着也得形式主义一样。<br>另一方面，其它某些硬件平台，没有二次转换的概念，Linux也需要提供一个高层抽象，来提供一个统一的界面。所以，Linux的段式管理，事实上只是“哄骗”了一下硬件而已。</p><p>按照Intel的本意，全局的用GDT，每个进程自己的用LDT——不过Linux则对所有的进程都使用了相同的段来对指令和数据寻址。即用户数据段，用户代码段，对应的，内核中的是内核数据段和内核代码段。这样做没有什么奇怪的，本来就是走形式嘛，像我们写年终总结一样。</p><p>Linux只使用了四个主要的段类对指令和数据寻址。</p><div class="table-container"><table><thead><tr><th>段</th><th>Base</th><th>G</th><th>Limit</th><th>S</th><th>Type</th><th>DPL</th><th>D/B</th><th>P</th></tr></thead><tbody><tr><td><strong>用户代码段</strong></td><td>0x00000000</td><td>1</td><td>0xfffff</td><td>1</td><td>10</td><td>3</td><td>1</td><td>1</td></tr><tr><td><strong>用户数据段</strong></td><td>0x00000000</td><td>1</td><td>0xfffff</td><td>1</td><td>2</td><td>3</td><td>1</td><td>1</td></tr><tr><td><strong>内核代码段</strong></td><td>0x00000000</td><td>1</td><td>0xfffff</td><td>1</td><td>10</td><td>0</td><td>1</td><td>1</td></tr><tr><td><strong>内核数据段</strong></td><td>0x00000000</td><td>1</td><td>0xfffff</td><td>1</td><td>2</td><td>0</td><td>1</td><td>1</td></tr></tbody></table></div><p>所有的段都是从0x00000000开始的，那就是说Linux下逻辑地址和线性地址是一致的。 即逻辑地址的偏移量字段的值与线性地址的值总是相同的。</p><h3 id="硬件中的分页"><a href="#硬件中的分页" class="headerlink" title="硬件中的分页"></a>硬件中的分页</h3><p>CPU的页式内存管理单元，负责把一个线性地址，最终翻译为一个物理地址。从管理和效率的角度出发，<br><strong>线性地址被分为以固定长度为单位的组，称为页(page)，<br>分页单元把所有的RAM分成固定长度的页框（page frame）,每一个页框包含一个页，一个页框的长度和一个页的长度一致。<br>把线性地址映射到物理地址的数据结构称为页表（page table）。</strong></p><p>理解：页是一组线性地址，是指包含在这组地址地址中的数据块，可以存放在任何页框或磁盘中。页框是主存的一部分，是一个存储区域。页表是数据结构，存在在主存中。</p><h4 id="常规分页"><a href="#常规分页" class="headerlink" title="常规分页"></a>常规分页</h4><p>32位的线性地址被分成3个域：<br><strong>Directory(目录)</strong>：最高10位 <strong>Table(页表)</strong>：中间10位 <strong>Offset(偏移量)</strong>：最低12位</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389083550.png" alt="线性地址格式"></p><p>使用二级模式的目的在于减少每个进程页表所需RAM的数量。如果使用一级页表，那将需要高达$2^{20}$（32位系统，线性地址最大为4GB，每个页4KB，可分成$2^{20}$个页，每个页的地址占4个字节，级需要4MB RAM来存储）个表项。</p><p>每个活动进程必须有一个分配给它的页目录。没有必要马上为进程的所有页表都分配RAM.</p><p>通过控制寄存器cr3获取页目录的物理地址（ 操作系统负责在调度进程的时候，把这个地址装入寄存器），通过Directory字段找到页目录中的目录项，目录项存放的是页表的基地址，通过Table字段找到页表表项，表项存放的是页框的物理地址。通过Offset字段又找到页框的相对位置。offset有12位长，故每一页框含有4096字节的数据。</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389156476.png" alt="80x86处理器的分页"></p><p>Directory字段和Table字段都是10位长，因此页目录和页表都可以多达1024项。那么一个页目录可以寻址到高达$1024 <em>1024</em> 4096 = 2^{32}$个存储单元，这和你对32位地址所期望的一样。</p><h4 id="常规分页举例"><a href="#常规分页举例" class="headerlink" title="常规分页举例"></a>常规分页举例</h4><p>假定内核给一个正在运行的进程分配的线性地址空间范围0x20000000到0x2003ffff。这个空间正好是是由64页组成（0x2003ffff - 0x20000000 + 1）/ 4K = 64)。<br>这两个线性地址的最高10位（Directory字段）的值为0x080或十进制的128，即都指向进程页目录的第129项。该目录项中包含了分配给该进程的页表的物理地址。如果没有给这个进程分配其他的线性地址，则页目录的其余1023项都填0。<br>中间的10位（Table字段）范围从0~0x03f，十进制即从0到63。因而只有页表的前64个表项是有意义的，其余960个表项都填0。</p><p>假设进程需要读线性地址0x20021406中的字节，步骤为：</p><blockquote><p><strong>1、Directory字段0x80选择页目录的第0x80目录项，该目录项存放的是页表的物理基地址<br>2、Table字段0x21选择页表的第0x21表项，该表项存放的是页框的物理基地址<br>3、最后，Offset字段0x406用于在目标页框中读偏移量位0x406中的字节</strong></p></blockquote><p>如果页表第0x21表项的Present标志为0，则此页就不在主存中。分页单元在线性地址转换的同时产生一个缺页异常。</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389664483.png" alt="分页的列子"></p><h4 id="扩展分页"><a href="#扩展分页" class="headerlink" title="扩展分页"></a>扩展分页</h4><p>从Pentium模型开始，80x86引入了扩展分页，它允许页框大小为4MB而不是4KB。扩展分页用于把大段连续的线性地址转换成相应的物理地址，在这些情况下，内核可以不用中间页表进行地址转换，节省内存并保留TLB项。</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389737178.png" alt="扩展分页"></p><p>通过设置页目录项的Page Size标志启用扩展分页功能。分页单元把32位线性地址分成两个字段：<br>Directory(目录)：最高10位 Offset(偏移量)：其余22位</p><h4 id="物理地址扩展（PAE）分页机制"><a href="#物理地址扩展（PAE）分页机制" class="headerlink" title="物理地址扩展（PAE）分页机制"></a>物理地址扩展（PAE）分页机制</h4><p>处理器所支持的RAM容量受连接到地址总线上的地址管脚数限制。Intel通过在它的处理器上把管脚数从32增加到36。让寻址能力从4G（$2^{32}$）提升到64G（$2^{36}$）。</p><blockquote><p><strong>1、64GB的RAM被分为$2^{24}$个页框，页表项的物理地址字段从20位扩展到了24位。 所以PAE的页表项为64位，所以一个4KB的页表只能包含512个表项。<br>2、引入页目录指针表（Page Directory Pointer Table，PDPT）的页表新级别，它由4个64位表项组成。<br>3、cr3控制寄存器包含一个27位的页目录指针表（PDPT）基地址字段。</strong></p></blockquote><p>启用PAE下4K分页的页表结构：</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389882225.png" alt="启用PAE下4K分页的页表结构"></p><p>启用PAE下4K分页的页表结构</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589389902637.png" alt="启用PAE下4K分页的页表结构"></p><p>线性地址的映射过程如下：</p><blockquote><p>1、cr3：指向一个PDPT基地址<br>2、地址的31～30：确定PDPT项<br>3、地址的29～21：确定页目录项中的一个<br>此处，发生了分支：</p><blockquote><p>A.如果页目录项的PS标志位等于0，那么页大小是4K<br> 4）地址的20～12：确定页表的某一项<br>5）地址的11～0：确定偏移<br>B. 如果PS=1，启用大页<br>4）地址的20～0：确定2M页中的偏移量。</p></blockquote></blockquote><p>总之，一旦cr3被设置，就可能寻址高达4GB RAM。如果我们希望对更多的RAM寻址，就必须在cr3中放置一个新值，或该表PDPT的内容。然而，使用PAE的主要问题是线性地址仍然32位长。这就迫使内核编程人员用同一线性地址映射到不同的RAM区。很明显，PAE并没有扩大进程的线性地址空间，因为它只处理物理地址。此外，只有内核能够修改进程的页表，所以在用户态下运行的进程不能使用大于4GB的物理地址空间。另一方面，PAE允许内核使用容量高达64GB的RAM，从而显著增加了系统中的进程数量。</p><h4 id="64位系统中的分页"><a href="#64位系统中的分页" class="headerlink" title="64位系统中的分页"></a>64位系统中的分页</h4><p>32位处理器普遍采用两级分页。然而两级分页并不适用于采用64位系统的计算机。<br>原因如下 :<br>首先假设一个大小为4KB的标准页，4KB覆盖$2^{12}$个地址，所以offset字段是12位。如果我们现在决定仅仅使用64位中的48位来寻址(这个限制仍然能使我们自在地拥有256TB的寻址空间！)，剩下的48-12=36位被分配给Table和Directory字段。如果我们决定为两个字段各预留18位，那么每个进程的页目录和页表都含有$2^{18}$个项，即超过256000个项。<br>由于这个原因，所有64位处理器的硬件分页系统都使用了额外的分页级别。使用的级别数量取决于处理器的类型。</p><div class="table-container"><table><thead><tr><th>平台名称</th><th>页大小</th><th>寻址使用位数</th><th>分页级别</th><th>线性地址分级</th></tr></thead><tbody><tr><td>alpha</td><td>8KB</td><td>43</td><td>3</td><td>10+10+10+13</td></tr><tr><td>ia64</td><td>4KB</td><td>39</td><td>3</td><td>9+9+9+12</td></tr><tr><td>ppc64</td><td>4KB</td><td>41</td><td>3</td><td>10+10+9+12</td></tr><tr><td>x86_64</td><td>4KB</td><td>48</td><td>4</td><td>9+9+9+9+12</td></tr></tbody></table></div><h4 id="硬件高速缓存"><a href="#硬件高速缓存" class="headerlink" title="硬件高速缓存"></a>硬件高速缓存</h4><p>当今的微处理器时钟频率接近几个GHz，而动态RAM芯片的存取时间是时钟周期的数百倍。为此，80x86体系结构中引入了一个叫行(line)的新单位。行由几十个连续的字节组成，以脉冲突发模式在慢速DRAM和快速的静态RAM（SRAM）之间传送，用来实现高速缓存。</p><p>高速缓存单元插在分页单元和主内存之间。包含一个硬件高速缓存内存和一个高度缓存控制器：<br><strong>高速缓存内存</strong>：存放内存中真正的行。<br><strong>高速缓存控制器</strong>：存放一个表项数组，每个表项对应高速缓存内存中的一个行。</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589390285399.png" alt="处理器硬件高速缓存"></p><h4 id="转换后援缓冲器（TLB）"><a href="#转换后援缓冲器（TLB）" class="headerlink" title="转换后援缓冲器（TLB）"></a>转换后援缓冲器（TLB）</h4><p>转换后援缓冲器（TLB）的高速缓存用于加快线性地址的转换。当一个线性地址第一次使用时，通过慢速访问RAM的页表计算出相应的物理地址。同时，物理地址被存放在一个TLB表项中，以便以后对同一个线性地址的引用可以快速地得到转换。</p><h3 id="Linux中的分页"><a href="#Linux中的分页" class="headerlink" title="Linux中的分页"></a>Linux中的分页</h3><p>Linux采用了一种同时适用于32位和64位系统的普通分页模型。直到2.6.10版本，Linux采用三级分页的模型。从2.6.11版本开始，采用了四级分页模型。这4种页表分别称为：</p><p><strong>页全局目录PGD</strong>（对应X86的页目录）<br><strong>页上级目录PUD</strong>（新引进的）<br><strong>页中间目录PMD</strong>（新引进的）<br><strong>页表PT</strong>（对应X86的页表）。</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589390333940.png" alt="Linux分页模式"></p><p>页全局目录包含若干上级目录的地址，页上级目录又依次包含若干页中间目录的地址，而页中间目录又包含若干页表的地址。每一个页表项指向一个页框。线性地址因此被分成五个部分。图中没有显示位数，因为每一部分的大小与具体的计算机体系结构有关。</p><p>那么，对于使用二级管理架构32位的硬件，现在又是四级转换了，它们怎么能够协调地工作起来呢？嗯，来看这种情况下，怎么来划分线性地址吧！<br>从硬件的角度，32位线性地址被分成了三部分——也就是说，不管软件怎么做，最终落实到硬件，也只认识这三位老大。<br>从软件的角度，由于多引入了两部份，也就是说，共有五部分。——要让二层架构的硬件认识五部份也很容易，在地址划分的时候，将页上级目录和页中间目录的长度设置为0就可以了。<br>这样，操作系统见到的是五部份，硬件还是按它死板的三部份划分，也不会出错，也就是说大家共建了和谐计算机系统。</p><p>同理，启用了物理地址扩展的32位系统使用了三级页表。Linux的页全局目录对应80x86的页目录指针表（PDPT），取消了页上级目录，页中间目录对应80x86的页目录，Linux的页表对应80x86的页表。</p><p>这样，虽说是多此一举，但是考虑到64位地址，使用四层转换架构的CPU，我们就不再把中间两个设为0了，这样，软件与硬件再次和谐——抽像就是强大呀！！！</p><p>每一个进程都有它自己的页全局目录和自己的页表集。当发生进程切换时，Linux把cr3控制寄存器的内容保存在前一个执行进程的描述符中，然后把下一个要执行进程的描述符的值装入cr3寄存器中。因此，当进程重新开始在CPU上执行时，分页单元指向一组正确的页表。</p><h4 id="物理内存布局"><a href="#物理内存布局" class="headerlink" title="物理内存布局"></a>物理内存布局</h4><p>在初始化阶段，内核必须建立一个物理地址映射来指定哪些物理地址范围内对内核可用而哪些不可用。</p><p>内核将下列页框记为保留，保留页框中的页绝不能被动态分配或交换到磁盘上：</p><blockquote><p>1、在不可用的物理地址范围内的页框<br>2、含有内核代码和已初始化的数据结构的页框</p></blockquote><p>一般来说，Linux内核安装在RAM中从物理地址0x00100000开始的地方，也就是说，从第二个MB开始。为什么内核没有安装在RAM第一个MB开始的地方？因为PC体系结构有几个独特的地方必须考虑到：</p><blockquote><p>1、页框0由BIOS使用，存放加电自检（POST）期间检查到的系统硬件配置。<br>2、物理地址从0x000a0000到0x000fffff的范围通常留给BIOS例程，并且映射ISA图形卡上的内部内存。<br>3、第一个MB内的其他页框可能由特定计算机模型保留。</p></blockquote><p>为了避免把内核装入一组不连续的页框里，Linux更愿意跳过RAM的第一个MB。明确地说，Linux把PC体系结构未保留的页框来动态存放所分配的页。</p><p>下图显示Linux怎样填充前3MB的RAM。我们假设内核需要小于3MB的RAM。<br>符号_text对应于物理地址0x00100000，表示内核代码第一个字节的地址。<br>符号_etext表示内核代码的结束位置，初始化内核数据的开始位置。<br>符号_edata表示初始化的内核数据结束位置，未初始化内核数据的开始位置。<br>符号_end表示未初始化内核的数据结束位置。</p><p><img src="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589390513952.png" alt="Linux 2.6的前768个页框"></p><h4 id="进程页表"><a href="#进程页表" class="headerlink" title="进程页表"></a>进程页表</h4><p>进程的地址空间分为两部分：<br>从0x00000000到0xbfffffff的（3G，用户空间）线性地址，无论进程运行在用户态还是内核态都可以寻址。<br>从0xc0000000到0xffffffff的（1G，内核空间）线性地址，只有内核态的进程才能寻址。</p><p>当进程运行在用户态时，它产生的线性地址小于0xc0000000；当进程运行在内核态时，它执行内核代码，所产生的地址大于等于0xc0000000，但是，在某些情况下，内核为了检索或者存放数据必须访问用户态线性地址空间。</p><p>页全局目录的第一部分表项映射的线性地址小于0xc0000000（在PAE未启用时是前768项，PAE启用时是前3项），具体大小依赖于特定进程。在0xc0000000之后的表项对所有进程来说都应该是相同的，他们等于主内核页全局目录的相应表项。</p><p>内核页表</p><h3 id="内核页表"><a href="#内核页表" class="headerlink" title="内核页表"></a>内核页表</h3><p>内核维持着一组自己使用的页表，驻留在所谓的主内核页全局目录中。内核如何初始化自己的页表，这个过程分为两个阶段。<br>第一阶段，内核创建一个有限的地址空间。这个最小限度的地址空间仅够将内核装入RAM和对其初始化的核心数据结构。<br>第二阶段，内核充分利用剩余的RAM并适当地建立分页表。</p><h5 id="临时内核页表"><a href="#临时内核页表" class="headerlink" title="临时内核页表"></a>临时内核页表</h5><p>临时内核页全局目录是在内核编译过程中静态初始化的，而临时页表是有startup_32()汇编语言函数初始化的。</p><p>临时页全局目录放在swapper_pg_dir变量中。临时页表在pg0变量处开始存放，紧接在内核未初始化的数据段后面。</p><p>分页的第一个阶段的目标是允许在实模式下和保护模式下都能很容易得对内核寻址，假定是8MB。</p><p>startup_32()函数通过向cr3控制寄存器装入swapper_pg_dir的地址及设置cr0控制寄存器的PG标志启用分页单元。</p><h5 id="当RAM小于896MB时的最终内核页表"><a href="#当RAM小于896MB时的最终内核页表" class="headerlink" title="当RAM小于896MB时的最终内核页表"></a>当RAM小于896MB时的最终内核页表</h5><p>由内核页表所提供的最终映射必须把从0xc00000000开始的线性地址转化为从0开始的物理地址。宏<strong>pa用于把从PAGE_OFFSET开始的线性地址转换成相应的物理地址，宏</strong>va做相反的转化。</p><p>主内核页全局目录仍然保存在swapper_pg_dir变量中由paging_init()函数初始化。</p><p>由startup_32()函数创建的物理内存前8MB的恒等映射用来完成内核的初始化阶段，当这种映射不再必要时，内核调用zap_low_mappings()函数来清除对应的页表项。</p><h5 id="当RAM大小在896MB和4096MB之间时的最终内核页表"><a href="#当RAM大小在896MB和4096MB之间时的最终内核页表" class="headerlink" title="当RAM大小在896MB和4096MB之间时的最终内核页表"></a>当RAM大小在896MB和4096MB之间时的最终内核页表</h5><p>linux在初始化阶段可以做的最好的事就是把一个具有896MB的RAM窗口映射到内核线性地址空间。如果一个程序需要对现有的RAM的其余部分寻址，那就必须把某些其他的线性地址间隔映射到所需的RAM，即剩余的RAM留着不映射由动态映射来处理。</p><h5 id="当RAM大于4096MB时的最终内核页表"><a href="#当RAM大于4096MB时的最终内核页表" class="headerlink" title="当RAM大于4096MB时的最终内核页表"></a>当RAM大于4096MB时的最终内核页表</h5><p>页全局目录中的前三项与用户线性地址空间相对应，内核用一个空页的地址对这三项进行初始化。第四项用页中间目录的地址初始化，该页中间目录是通过调用alloc_bootmen_low_pages()分配的。页中间目录的前448项用RAM前896MB的物理地址填充。</p><p>然后页全局目录的第四项被拷贝到第一项中，这样好为线性地址的前896MB中的低物理内存映射做镜像。为了完成SMP系统的初始化，这个映射是必须的：当这个映射不再必要时，内核通过调用zap_low_mappings()来清除对应的页表项。</p><h4 id="固定映射的线性地址"><a href="#固定映射的线性地址" class="headerlink" title="固定映射的线性地址"></a>固定映射的线性地址</h4><p>我们看到内核线性地址第四个GB的初始部分映射系统的物理内存。但是，至少128MB的线性地址总是留作他用，因为内核使用这些线性地址实现非连续内存分配和固定映射的线性地址。</p><p>内核线性地址空间范围：3GB-4GB (0xc0000000-0xffffffff)<br>内核线性地址空间[3GB,3GB+896MB]————-（线性映射）—————物理地址空间[0,896M]<br>内核线性地址空间[3GB+896MB,4GB]用来实现“非连续内存分配”和“固定映射”</p><p>固定映射的线性地址以“任意方式”（与前896MB线性映射方式相比）映射任何物理地址空间，固定映射使用的线性地址位于线性地址第4个GB末端</p><h4 id="处理硬件高速缓存和TLB"><a href="#处理硬件高速缓存和TLB" class="headerlink" title="处理硬件高速缓存和TLB"></a>处理硬件高速缓存和TLB</h4><h5 id="处理硬件高速缓存"><a href="#处理硬件高速缓存" class="headerlink" title="处理硬件高速缓存"></a>处理硬件高速缓存</h5><p>硬件高速缓存是通过高速缓存行寻址的。为了使高速缓存的命中率达到最优化：</p><blockquote><p><strong>1、一个数据结构中最常使用的字段放在该数据结构内的低偏移部分，以便它们能给处于高速缓存的同一行中。<br>2、当为一大组数据结构分配空间时，内核试图把它们都存放在内存中，以便所有高速缓存行按同一方式使用。</strong></p></blockquote><h5 id="处理TLB"><a href="#处理TLB" class="headerlink" title="处理TLB"></a>处理TLB</h5><h6 id="TLB作用"><a href="#TLB作用" class="headerlink" title="TLB作用"></a>TLB作用</h6><p>页表一般都很大，并且存放在内存中，所以处理器引入MMU后，读取指令、数据需要访问两次内存：首先通过查询页表得到物理地址，然后访问该物理地址读取指令、数据。为了减少因为MMU导致的处理器性能下降，引入了TLB，TLB是Translation Lookaside Buffer的简称，可翻译为“地址转换后援缓冲器”，也可简称为“快表”。简单地说，TLB就是页表的Cache，其中存储了当前最可能被访问到的页表项，其内容是部分页表项的一个副本。只有在TLB无法完成地址翻译任务时，才会到内存中查询页表，这样就减少了页表查询导致的处理器性能下降。<br>TLB中的项由两部分组成：标识和数据。标识中存放的是虚地址的一部分，而数据部分中存放物理页号、存储保护信息以及其他一些辅助信息。</p><h6 id="TLB原理"><a href="#TLB原理" class="headerlink" title="TLB原理"></a>TLB原理</h6><p>当cpu要访问一个虚拟地址/线性地址时，CPU会首先根据虚拟地址的高20位（20是x86特定的，不同架构有不同的值）在TLB中查找。如果是表中没有相应的表项，称为TLB miss，需要通过访问慢速RAM中的页表计算出相应的物理地址。同时，物理地址被存放在一个TLB表项中，以后对同一线性地址的访问，直接从TLB表项中获取物理地址即可，称为TLB hit。</p><p>想像一下x86_32架构下没有TLB的存在时的情况，对线性地址的访问，首先从PGD中获取PTE（第一次内存访问），在PTE中获取页框地址（第二次内存访问），最后访问物理地址，总共需要3次RAM的访问。如果有TLB存在，并且TLB hit，那么只需要一次RAM访问即可。</p><h6 id="TLB表项"><a href="#TLB表项" class="headerlink" title="TLB表项"></a>TLB表项</h6><p>TLB内部存放的基本单位是页表条目，对应着RAM中存放的页表条目。页表条目的大小固定不变的，所以TLB容量越大，所能存放的页表条目越多，TLB hit的几率也越大。但是TLB容量毕竟是有限的，因此RAM页表和TLB页表条目无法做到一一对应。因此CPU收到一个线性地址，那么必须快速做两个判断：</p><blockquote><p><strong>1、所需的页表是否已经缓存在TLB内部（TLB miss或者TLB hit）<br>2、所需的页表在TLB的哪个条目内</strong></p></blockquote><p>为了尽量减少CPU做出这些判断所需的时间，那么就必须在TLB页表条目和内存页表条目之间的对应方式做足功夫</p><p><strong>全相连 - full associative</strong><br>在这种组织方式下，TLB cache中的表项和线性地址之间没有任何关系，也就是说，一个TLB表项可以和任意线性地址的页表项关联。这种关联方式使得TLB表项空间的利用率最大。但是延迟也可能相当的大，因为每次CPU请求，TLB硬件都把线性地址和TLB的表项逐一比较，直到TLB hit或者所有TLB表项比较完成。特别是随着CPU缓存越来越大，需要比较大量的TLB表项，所以这种组织方式只适合小容量TLB</p><p><strong>直接匹配</strong><br>每一个线性地址块都可通过模运算对应到唯一的TLB表项，这样只需进行一次比较，降低了TLB内比较的延迟。但是这个方式产生冲突的几率非常高，导致TLB miss的发生，降低了命中率。</p><p>比如，我们假定TLB cache共包含16个表项，CPU顺序访问以下线性地址块：1, 17 , 1, 33。当CPU访问地址块1时，1 mod 16 = 1，TLB查看它的第一个页表项是否包含指定的线性地址块1，包含则命中，否则从RAM装入；然后CPU访问地址块17，17 mod 16 = 1，TLB发现它的第一个页表项对应的不是线性地址块17，TLB miss发生，TLB访问RAM把地址块17的页表项装入TLB；CPU接下来访问地址块1，此时又发生了miss，TLB只好访问RAM重新装入地址块1对应的页表项。因此在某些特定访问模式下，直接匹配的性能差到了极点</p><p><strong>组相连 - set-associative</strong></p><p>为了解决全相连内部比较效率低和直接匹配的冲突，引入了组相连。这种方式把所有的TLB表项分成多个组，每个线性地址块对应的不再是一个TLB表项，而是一个TLB表项组。CPU做地址转换时，首先计算线性地址块对应哪个TLB表项组，然后在这个TLB表项组顺序比对。按照组长度，我们可以称之为2路，4路，8路。</p><p>经过长期的工程实践，发现8路组相连是一个性能分界点。8路组相连的命中率几乎和全相连命中率几乎一样，超过8路，组内对比延迟带来的缺点就超过命中率提高带来的好处了。</p><p>这三种方式各有优缺点，组相连是个折衷的选择，适合大部分应用环境。当然针对不同的领域，也可以采用其他的cache组织形式。</p><h6 id="TLB表项更新"><a href="#TLB表项更新" class="headerlink" title="TLB表项更新"></a>TLB表项更新</h6><p>TLB表项更新可以有TLB硬件自动发起，也可以有软件主动更新</p><blockquote><p><strong>1、TLB miss发生后，CPU从RAM获取页表项，会自动更新TLB表项<br>2、TLB中的表项在某些情况下是无效的，比如进程切换，更改内核页表等，此时CPU硬件不知道哪些TLB表项是无效的，只能由软件在这些场景下，刷新TLB。</strong></p></blockquote><p>在linux kernel软件层，提供了丰富的TLB表项刷新方法，但是不同的体系结构提供的硬件接口不同。比如x86_32仅提供了两种硬件接口来刷新TLB表项：</p><blockquote><p>**1. 向cr3寄存器写入值时，会导致处理器自动刷新非全局页的TLB表项</p><ol><li>在Pentium Pro以后，invlpg汇编指令用来无效指定线性地址的单个TLB表项无效。**</li></ol></blockquote><h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>《深入理解LINUX内核》<br><a href="https://blog.csdn.net/crazyingbird/article/details/7175559" target="_blank" rel="external nofollow">物理地址扩展（PAE）分页机制</a><br><a href="https://www.cnblogs.com/alantu2018/p/9000777.html" target="_blank" rel="external nofollow">TLB的作用及工作原理</a></p></div><div><div><div style="text-align:center;color:#ccc;font-size:14px">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div></div></div><div><div class="my_post_copyright"><script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script><script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script><script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script><p><span>本文标题:</span><a href="/2020/05/22/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/">内存寻址</a></p><p><span>文章作者:</span><a href="/" title="访问 发发 的个人博客">发发</a></p><p><span>发布时间:</span>2020年05月22日 - 00:05</p><p><span>最后更新:</span>2020年05月21日 - 02:05</p><p><span>原始链接:</span><a href="/2020/05/22/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" title="内存寻址">http://wangzaifa.com/2020/05/22/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/</a><span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://wangzaifa.com/2020/05/22/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" aria-label="复制成功！"></i></span></p><p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="external nofollow" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p></div><script>var clipboard=new Clipboard(".fa-clipboard");$(".fa-clipboard").click(function(){clipboard.on("success",function(){swal({title:"",text:"复制成功",icon:"success",showConfirmButton:!0})})})</script></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>坚持原创技术分享，您的支持将鼓励我继续创作！</div> <button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'> <span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"> <img id="wechat_qr" src="/images/wechatpay.PNG" alt="发发 微信支付"><p>微信支付</p></div><div id="alipay" style="display:inline-block"> <img id="alipay_qr" src="/images/alipay.PNG" alt="发发 支付宝"><p>支付宝</p></div></div></div></div><footer class="post-footer"><div class="post-tags"><a href="/tags/OS/" rel="tag"><i class="fa fa-tag"></i> OS</a><a href="/tags/LINUX/" rel="tag"><i class="fa fa-tag"></i> LINUX</a><a href="/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="tag"><i class="fa fa-tag"></i> 内存管理</a></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2020/05/12/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%92%8C%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/" rel="next" title="时间复杂度和空间复杂度"><i class="fa fa-chevron-left"></i> 时间复杂度和空间复杂度</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"></div></div></footer></div></article><div class="post-spread"><div class="addthis_inline_share_toolbox"><script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5c93cd6ff0eab09a" async="async"></script></div></div></div></div><div class="comments" id="comments"></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/images/bulangxioang.jpeg" alt="发发"><p class="site-author-name" itemprop="name">发发</p><p class="site-description motion-element" itemprop="description"></p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">6</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">4</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">10</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="feed-link motion-element"><a href="/atom.xml" rel="alternate"><i class="fa fa-rss"></i> RSS</a></div><div class="links-of-author motion-element"><span class="links-of-author-item"><a rel="external nofollow" href="https://github.com/WangZaifa" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a rel="external nofollow" href="https://www.jianshu.com/u/7641e14b9930" target="_blank" title="简书"><i class="fa fa-fw fa-heartbeat"></i> 简书</a></span><span class="links-of-author-item"><a rel="external nofollow" href="https://blog.csdn.net/u010280997" target="_blank" title="CSDN"><i class="fa fa-fw fa-copyright"></i> CSDN</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内存地址："><span class="nav-number">1.</span> <span class="nav-text">内存地址：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件中的分段"><span class="nav-number">2.</span> <span class="nav-text">硬件中的分段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#段标识符"><span class="nav-number">2.1.</span> <span class="nav-text">段标识符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#段描述符"><span class="nav-number">2.2.</span> <span class="nav-text">段描述符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#快速访问段描述符"><span class="nav-number">2.3.</span> <span class="nav-text">快速访问段描述符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分段单元"><span class="nav-number">2.4.</span> <span class="nav-text">分段单元</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux中的分段"><span class="nav-number">3.</span> <span class="nav-text">Linux中的分段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件中的分页"><span class="nav-number">4.</span> <span class="nav-text">硬件中的分页</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#常规分页"><span class="nav-number">4.1.</span> <span class="nav-text">常规分页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常规分页举例"><span class="nav-number">4.2.</span> <span class="nav-text">常规分页举例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#扩展分页"><span class="nav-number">4.3.</span> <span class="nav-text">扩展分页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#物理地址扩展（PAE）分页机制"><span class="nav-number">4.4.</span> <span class="nav-text">物理地址扩展（PAE）分页机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#64位系统中的分页"><span class="nav-number">4.5.</span> <span class="nav-text">64位系统中的分页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#硬件高速缓存"><span class="nav-number">4.6.</span> <span class="nav-text">硬件高速缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#转换后援缓冲器（TLB）"><span class="nav-number">4.7.</span> <span class="nav-text">转换后援缓冲器（TLB）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux中的分页"><span class="nav-number">5.</span> <span class="nav-text">Linux中的分页</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#物理内存布局"><span class="nav-number">5.1.</span> <span class="nav-text">物理内存布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程页表"><span class="nav-number">5.2.</span> <span class="nav-text">进程页表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内核页表"><span class="nav-number">6.</span> <span class="nav-text">内核页表</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#临时内核页表"><span class="nav-number">6.0.1.</span> <span class="nav-text">临时内核页表</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#当RAM小于896MB时的最终内核页表"><span class="nav-number">6.0.2.</span> <span class="nav-text">当RAM小于896MB时的最终内核页表</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#当RAM大小在896MB和4096MB之间时的最终内核页表"><span class="nav-number">6.0.3.</span> <span class="nav-text">当RAM大小在896MB和4096MB之间时的最终内核页表</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#当RAM大于4096MB时的最终内核页表"><span class="nav-number">6.0.4.</span> <span class="nav-text">当RAM大于4096MB时的最终内核页表</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#固定映射的线性地址"><span class="nav-number">6.1.</span> <span class="nav-text">固定映射的线性地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#处理硬件高速缓存和TLB"><span class="nav-number">6.2.</span> <span class="nav-text">处理硬件高速缓存和TLB</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#处理硬件高速缓存"><span class="nav-number">6.2.1.</span> <span class="nav-text">处理硬件高速缓存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#处理TLB"><span class="nav-number">6.2.2.</span> <span class="nav-text">处理TLB</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#TLB作用"><span class="nav-number">6.2.2.1.</span> <span class="nav-text">TLB作用</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#TLB原理"><span class="nav-number">6.2.2.2.</span> <span class="nav-text">TLB原理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#TLB表项"><span class="nav-number">6.2.2.3.</span> <span class="nav-text">TLB表项</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#TLB表项更新"><span class="nav-number">6.2.2.4.</span> <span class="nav-text">TLB表项更新</span></a></li></ol></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2020</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">发发</span></div><div class="busuanzi-count"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> <span class="site-uv">访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span> 人</span> <span class="site-pv">总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span> 次</span></div><div> <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=00000000000000" style="display:inline-block;text-decoration:none;height:20px;line-height:20px" rel="external nofollow"><img src="https://s1.ax1x.com/2018/09/29/ilmwIH.png" style="float:left">浙公网安备 00000000000000号<p></p></a><span class="post-meta-divider">|</span><span><a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow">浙ICP备19049094号</a></span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span id="scrollpercent"><span>0</span>%</span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '7gKaTMAWRyEFganEirMn3leG-gzGzoHsz',
+        appKey: 'xsgHe6sneGLewiY65HvpO5oK',
+        placeholder: '你的言论将上交国家,请注意文明用言,否则可能被拒收或查水表 ！(✿◡‿◡)  快来呀！ (゜-゜)つロ 干杯~',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+	//新增以下代码即可，可以移除.info下所有子节点。
+    var infoEle = document.querySelector('#comments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+       infoEle.childNodes.forEach(function(item) {
+         item.parentNode.removeChild(item);
+       });
+    }
+  </script><script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script><script>!function(){var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}()</script><script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script><script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script><script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>
