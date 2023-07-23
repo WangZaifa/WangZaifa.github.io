@@ -79,7 +79,7 @@
 
 
 
-  <meta name="keywords" content="wangzaifa">
+  <meta name="keywords" content="LINUX,OS,内核,">
 
 
 
@@ -92,14 +92,19 @@
 
 
 
-<meta name="description" content="爱吃肉的杭帮程序员">
-<meta property="og:type" content="website">
-<meta property="og:title" content="FAFA&#39;S BLOG">
-<meta property="og:url" content="http://wangzaifa.com/archives/index.html">
+<meta name="description" content="本文主要介绍内核常见异常以及定位方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内核常见异常信息说明">
+<meta property="og:url" content="http://wangzaifa.com/2023/07/23/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/index.html">
 <meta property="og:site_name" content="FAFA&#39;S BLOG">
-<meta property="og:description" content="爱吃肉的杭帮程序员">
+<meta property="og:description" content="本文主要介绍内核常见异常以及定位方法。">
 <meta property="og:locale">
+<meta property="article:published_time" content="2023-07-23T07:11:29.687Z">
+<meta property="article:modified_time" content="2023-07-23T10:21:34.932Z">
 <meta property="article:author" content="发发">
+<meta property="article:tag" content="LINUX">
+<meta property="article:tag" content="OS">
+<meta property="article:tag" content="内核">
 <meta name="twitter:card" content="summary">
 
 
@@ -130,13 +135,13 @@
 
 
 
-  <link rel="canonical" href="http://wangzaifa.com/archives/">
+  <link rel="canonical" href="http://wangzaifa.com/2023/07/23/内核常见异常信息说明/">
 
 
 
 
 
-  <title>归档 | FAFA'S BLOG</title>
+  <title>内核常见异常信息说明 | FAFA'S BLOG</title>
   
 
 
@@ -155,7 +160,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -291,287 +296,321 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
 
-      <span class="archive-page-counter">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangzaifa.com/2023/07/23/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/bulangxioang.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="FAFA'S BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h2 class="post-title" itemprop="name headline">内核常见异常信息说明</h2>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2023-07-23T15:11:29+08:00">
+                2023-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 7 篇日志。 继续努力。
-      </span>
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">操作系统</span>
+                  </a>
+                </span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h2 class="archive-year" id="archive-year-2023">2023</h2>
-          </div>
-        
-        
 
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2023/07/23/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/" itemprop="url">
-              
-                <span itemprop="name">内核常见异常信息说明</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2023-07-23T15:11:29+08:00" content="2023-07-23">
-          07-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
           
-          <div class="collection-title">
-            <h2 class="archive-year" id="archive-year-2021">2021</h2>
-          </div>
-        
-        
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2023/07/23/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2023/07/23/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
+          
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
 
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2021/05/20/PHY%E7%AE%A1%E7%90%86%E6%8E%A5%E5%8F%A3MDIO/" itemprop="url">
+          
+            <div class="post-wordcount">
               
-                <span itemprop="name">PHY管理接口MDIO</span>
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.6k 字
+                </span>
               
-            </a>
-        
-      </h3>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2021-05-20T23:21:37+08:00" content="2021-05-20">
-          05-20
-        </time>
-      </div>
+              
+                <span class="post-meta-divider">|</span>
+              
 
-    </header>
-  </article>
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6 分钟
+                </span>
+              
+            </div>
+          
 
+          
 
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2021/05/20/hello-world/" itemprop="url">
-              
-                <span itemprop="name">Hello World</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2021-05-20T23:21:37+08:00" content="2021-05-20">
-          05-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2021/05/20/%E8%BF%9B%E7%A8%8B%E7%9D%A1%E7%9C%A0/" itemprop="url">
-              
-                <span itemprop="name">进程睡眠</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2021-05-20T23:21:37+08:00" content="2021-05-20">
-          05-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <p>本文主要介绍内核常见异常以及定位方法。<span id="more"></span><!--more--><!--more--></p>
+<h3 id="内核死循环监控"><a href="#内核死循环监控" class="headerlink" title="内核死循环监控"></a>内核死循环监控</h3><p><strong>示例：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BUG: soft lockup - CPU#<span class="number">0</span> stuck <span class="keyword">for</span> <span class="number">9</span>s![stpd:<span class="number">233</span>]</span><br></pre></td></tr></table></figure>
+<p><strong>解释：</strong><br>        soft lockup： 关键词，表明监测到死循环<br>        CPU#0： this cpu，监测到死循环所在的cpu核<br>        9s：监测到死循环的时长，一般比设置的死循环监控门限大1<br>        [stpd:233]：监测到死循环发生时的任务名和任务id</p>
+<p><span style="background-color: yellow;">注意：任务名和任务id说明的只是在该任务的上下文，不一定是当前任务发生了死循环，中断或者软中断过多，处理时间过长也会导致</span></p>
+<p><strong>定位思路：</strong><br>        1、死循环：进程或线程可能陷入了一个无限的循环中，导致无法退出。<br>        2、资源竞争：可能存在资源竞争的情况，导致CPU#0 无法顺利释放并处理其他任务。<br>        3、锁问题：可能存在锁的问题，如死锁或无法正确释放锁。<br>        4、大量的中断：导致CPU#0 被卡住并无法处理其他任务<br>        通过dmesg信息查看调用栈信息分析当前流程是否可能发生死循环。或者当前环境是否会导致大量的中断和软中断处理。</p>
+<h3 id="核间监测"><a href="#核间监测" class="headerlink" title="核间监测"></a>核间监测</h3><p>每隔1s，core(n)会对core(n+1)的软中断处理个数和中断处理个数与上一秒进行比较，若中断（软中断）个数不发生变化的时间超过门限值，会触发狗叫。</p>
+<p><span style="background-color: yellow;">注：核间检测是否配置，通过查看/porc/cmdline中是否有ccd_threshold=28参数。28表示的是门限值，单位为s,可修改</span></p>
+<p><strong>示例：</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cpu <span class="number">0</span> [hard cpu <span class="number">0</span>] disable softirq <span class="keyword">long</span> times.</span><br><span class="line"><span class="number">0</span>:NMI[#<span class="number">1</span>]:</span><br><span class="line">...</span><br><span class="line">Call Trace:</span><br></pre></td></tr></table></figure></p>
+<p><strong>解释：</strong><br>        cpu 0：0核上被检测到，关中断/软中断时间过长<br>        softirq：表示关软中断时间过长，若为irq，则关中断时间过长<br>        0:NMI[#1]：0核上触发的狗叫异常<br>        Call Trace：处理狗叫异常时会打印调用栈<br>        CPU 0被禁用了软件中断（softirq）较长的一段时间。硬件中断（hardirq）通常优先于软件中断进行处理，但如果软件中断需要处理的任务太耗时，就会导致CPU 0无法及时进行硬件中断的处理。</p>
+<p><strong>定位思路：</strong><br>        1、通过查看Call Trace中的函数调用栈，找到导致CPU 0长时间禁用软件中断的函数。<br>        2、通过/proc/softirqs和/proc/interrupts两个文件，查看软中断和硬中断的统计数据。可以提供有关中断处理程序正在处理以及哪些软件中断正在被禁用。<br>        3、借助中断检测工具来查看谁最后关闭了中断或软中断。</p>
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>内核中的某个线程或进程持有一个锁并等待该锁被释放，而其他进程或线程无法获取该锁而无法继续执行。这种情况下，所有进程或线程都会停止响应，系统会陷入死循环或死锁状态。<br><strong>示例：</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">BUG: spinlock lockup on CPU#<span class="number">1</span>, swapper/<span class="number">0</span>, <span class="number">83b</span>b3fc0</span><br><span class="line">lock:<span class="number">83b</span>b3fc, lock owner: swapper/<span class="number">0</span>, lock owner_cpu: CPU#<span class="number">3</span></span><br><span class="line">Call Trace:</span><br><span class="line">...</span><br><span class="line">owner<span class="number">&#x27;</span>s Stack:</span><br><span class="line">Call Trace:</span><br></pre></td></tr></table></figure></p>
+<p><strong>解释：</strong><br>swapper/0：获取锁的任务名和pid<br>83bb3fc0：锁所在的地址，标识了一个锁<br>lock owner：当前锁的持有者<br>lock owner_cpu：当前持有者所在的cpu<br>Call Trace：尝试获取锁的任务的调用栈<br>owner’s Stack：持有锁的任务栈<br>Call Trace：锁持有者的调用栈</p>
+<p><strong>定位思路：</strong><br>1、分析Call Trace和owner’s Stack调用栈<br>2、在CPU3上，通过bta打印出的获取者、持有者的信息以及调用栈信息，分析相应流程是否存在死锁的情况。<br>3、锁所在的内存被踩或访问野指针也可能会导致死锁。</p>
+<h3 id="原子上下文调用可能睡眠的函数"><a href="#原子上下文调用可能睡眠的函数" class="headerlink" title="原子上下文调用可能睡眠的函数"></a>原子上下文调用可能睡眠的函数</h3><p><strong>示例：</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">BUG: sleeping function called from invalid context at down_read:<span class="number">21</span></span><br><span class="line"><span class="function">in <span class="title">atomic</span><span class="params">()</span>:0,<span class="title">irqs_disabled</span><span class="params">()</span>:1</span></span><br><span class="line"><span class="function">INFO:lockdep is truned off.</span></span><br><span class="line"><span class="function">irq event stamp: 0</span></span><br><span class="line"><span class="function">hardirqs last enabled <span class="title">at</span> <span class="params">(<span class="number">0</span>)</span>: [&lt;0000000000000000&gt;] 0x0</span></span><br><span class="line"><span class="function">hardirqs last disabled <span class="title">at</span> <span class="params">(<span class="number">0</span>)</span>: [&lt;ffffffff80245404&gt;] copy_process+0x2d4/0x12e0</span></span><br><span class="line"><span class="function">softirqs last enabled <span class="title">at</span> <span class="params">(<span class="number">0</span>)</span>: [&lt;ffffffff80245404&gt;] copy_process+0x2d4/0x12e0</span></span><br><span class="line"><span class="function">softirqs last disabled <span class="title">at</span> <span class="params">(<span class="number">0</span>)</span>: [&lt;0000000000000000&gt;] 0x0</span></span><br><span class="line"><span class="function">Call Trace:</span></span><br><span class="line"><span class="function">.....</span></span><br><span class="line"><span class="function">might_sleep: 内核中有的会睡眠的函数会在入口处用might_sleep检测当前上下文是否位于原子上下文</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>解释：</strong><br>down_read:21：调用might_sleep所在的文件及行号<br>in_atomic()：1表示在原子上下文<br>irqs_disabled()：1表示在中断上下文<br>hardirqs last enabled at (0)：最后一次开中断的位置<br>hardirqs last disabled at (0)：最后一次关中断的位置<br>softirqs last enabled at (0)：最后一次开软中断的位置<br>softirqs last disabled at (0)：最后一次关软中断的位置</p>
+<p><strong>定位思路：</strong><br>1、中断上下文：排查中断处理流程中调用可能睡眠函数<br>2、原子上下文：排查流程中是否在获取锁后调用可能睡眠函数</p>
+<p><span style="background-color: yellow;">注意：当前linux中允许睡眠的锁是信号量(semaphore)、互斥锁（mutex）、条件变量（condition variable）</span></p>
+<h3 id="原子上下文进行任务切换"><a href="#原子上下文进行任务切换" class="headerlink" title="原子上下文进行任务切换"></a>原子上下文进行任务切换</h3><p>在锁住某个内核资源时，尝试调用会导致进程睡眠的操作，从而违反了内核的同步约束（如不允许睡眠锁等）引起的。<br><strong>示例：</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BUG: scheduling <span class="keyword">while</span> atomic: swapper/<span class="number">0</span>/<span class="number">0x00000100</span></span><br><span class="line">Call Trace:</span><br></pre></td></tr></table></figure></p>
+<p><strong>定位思路：</strong> 根据调用栈排查代码；尝试开启内核debugging级别的错误信息，例如Enable CONFIG_DEBUG_ATOMIC_SLEEP 打印信息，帮忙检查问题。</p>
+<h3 id="内存耗尽"><a href="#内存耗尽" class="headerlink" title="内存耗尽"></a>内存耗尽</h3><p><strong>示例：</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lldpd invoked oom-killer: gfp_mask=<span class="number">0xd0</span>, order=<span class="number">0</span>, oomkilladj=<span class="number">0</span></span><br><span class="line">Call Trace:</span><br><span class="line">[&lt;<span class="number">80123</span>a28&gt;]dump_stack+<span class="number">0x8</span>/<span class="number">0x40</span></span><br><span class="line">[&lt;<span class="number">801</span>a2564&gt;]oom_kill_process+<span class="number">0xd4</span>/<span class="number">0x280</span></span><br><span class="line">[&lt;<span class="number">801</span>a2bc4&gt;]out_of_memory+<span class="number">0xf4</span>/<span class="number">0x180</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>解释：</strong><br>oom-killer：内存耗尽杀手（Out Of-Memory Killer）<br>gfp_mask=0xd0：表示该进程申请内存时，使用了<strong>GFP_COMP和</strong>GFP_ZERO标志<br>order=0：表示该进程申请的是一块大小为4KB的物理内存页<br>dump_stack：记录内核堆栈跟踪信息<br>oom_kill_process：系统通过调用oom_kill_process函数杀死进程lldpd，以释放内存资源<br>out_of_memory：表示系统因为内存不足，而调用了out_of_memory函数来释放被占用的内存。</p>
+<p><strong>定位思路：</strong><br>1、在进入OOM异常前肯定打印了内存告警信息，分析内存告警中用户态内存使用和内核态各内存池分配情况，找出异常情况。<br>2、内存门限告警信息若没有打印出，去flash或cf卡上找diag日志。</p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2021/05/20/%E8%B5%84%E6%BA%90%E7%9B%B8%E5%85%B3%E7%9A%84%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F/" itemprop="url">
-              
-                <span itemprop="name">资源相关的编程模式</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2021-05-20T23:21:37+08:00" content="2021-05-20">
-          05-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2021/05/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" itemprop="url">
-              
-                <span itemprop="name">内存寻址</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2021-05-20T23:21:37+08:00" content="2021-05-20">
-          05-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2021/05/20/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%92%8C%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/" itemprop="url">
-              
-                <span itemprop="name">时间复杂度和空间复杂度</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2021-05-20T23:21:37+08:00" content="2021-05-20">
-          05-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    <div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+ 
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2023/07/23/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/">内核常见异常信息说明</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问  的个人博客"></a></p>
+  <p><span>发布时间:</span>2023年07月23日 - 15:07</p>
+  <p><span>最后更新:</span>2023年07月23日 - 18:07</p>
+  <p><span>原始链接:</span><a href="/2023/07/23/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/" title="内核常见异常信息说明">http://wangzaifa.com/2023/07/23/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://wangzaifa.com/2023/07/23/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="external nofollow" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+    });
+    });  
+</script>
+
+      
+    </div>
+	
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.PNG" alt=" 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.PNG" alt=" 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/LINUX/" rel="tag"><i class="fa fa-tag"></i> LINUX</a>
+          
+            <a href="/tags/OS/" rel="tag"><i class="fa fa-tag"></i> OS</a>
+          
+            <a href="/tags/%E5%86%85%E6%A0%B8/" rel="tag"><i class="fa fa-tag"></i> 内核</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/20/PHY%E7%AE%A1%E7%90%86%E6%8E%A5%E5%8F%A3MDIO/" rel="next" title="PHY管理接口MDIO">
+                <i class="fa fa-chevron-left"></i> PHY管理接口MDIO
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+        <!-- Go to www.addthis.com/dashboard to customize your tools -->
+<div class="addthis_inline_share_toolbox">
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5c93cd6ff0eab09a" async="async"></script>
+</div>
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -579,6 +618,13 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -599,8 +645,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -691,6 +746,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E6%AD%BB%E5%BE%AA%E7%8E%AF%E7%9B%91%E6%8E%A7"><span class="nav-number">1.</span> <span class="nav-text">内核死循环监控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E9%97%B4%E7%9B%91%E6%B5%8B"><span class="nav-number">2.</span> <span class="nav-text">核间监测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-number">3.</span> <span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E4%B8%8A%E4%B8%8B%E6%96%87%E8%B0%83%E7%94%A8%E5%8F%AF%E8%83%BD%E7%9D%A1%E7%9C%A0%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">原子上下文调用可能睡眠的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E4%B8%8A%E4%B8%8B%E6%96%87%E8%BF%9B%E8%A1%8C%E4%BB%BB%E5%8A%A1%E5%88%87%E6%8D%A2"><span class="nav-number">5.</span> <span class="nav-text">原子上下文进行任务切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E8%80%97%E5%B0%BD"><span class="nav-number">6.</span> <span class="nav-text">内存耗尽</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -859,6 +930,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
