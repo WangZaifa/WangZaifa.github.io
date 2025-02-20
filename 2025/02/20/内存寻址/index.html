@@ -79,7 +79,7 @@
 
 
 
-  <meta name="keywords" content="LINUX,OS,内存管理,">
+  <meta name="keywords" content="OS,LINUX,内存管理,">
 
 
 
@@ -95,7 +95,7 @@
 <meta name="description" content="最近学习《深入理解LINUX内核》内存寻址，本文对此知识做个总结。主要介绍80x86微处理器怎样进行芯片级的内存寻址，Linux(内核版本为2.6.11)又是如何利用寻址硬件的。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="内存寻址">
-<meta property="og:url" content="http://wangzaifa.com/2021/05/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/index.html">
+<meta property="og:url" content="http://wangzaifa.com/2025/02/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/index.html">
 <meta property="og:site_name" content="FAFA&#39;S BLOG">
 <meta property="og:description" content="最近学习《深入理解LINUX内核》内存寻址，本文对此知识做个总结。主要介绍80x86微处理器怎样进行芯片级的内存寻址，Linux(内核版本为2.6.11)又是如何利用寻址硬件的。">
 <meta property="og:locale">
@@ -113,11 +113,11 @@
 <meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589390285399.png">
 <meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589390333940.png">
 <meta property="og:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589390513952.png">
-<meta property="article:published_time" content="2021-05-20T15:21:37.397Z">
+<meta property="article:published_time" content="2025-02-19T18:06:35.944Z">
 <meta property="article:modified_time" content="2020-07-10T15:59:02.423Z">
 <meta property="article:author" content="发发">
-<meta property="article:tag" content="LINUX">
 <meta property="article:tag" content="OS">
+<meta property="article:tag" content="LINUX">
 <meta property="article:tag" content="内存管理">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://cdn.wangzaifa.com/xiaoshujiang/2020514/1589387520566.png">
@@ -150,7 +150,7 @@
 
 
 
-  <link rel="canonical" href="http://wangzaifa.com/2021/05/20/内存寻址/">
+  <link rel="canonical" href="http://wangzaifa.com/2025/02/20/内存寻址/">
 
 
 
@@ -325,7 +325,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wangzaifa.com/2021/05/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/">
+    <link itemprop="mainEntityOfPage" href="http://wangzaifa.com/2025/02/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content>
@@ -354,8 +354,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-20T23:21:37+08:00">
-                2021-05-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2025-02-20T02:06:35+08:00">
+                2025-02-20
               </time>
             
 
@@ -395,8 +395,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2021/05/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2021/05/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" itemprop="commentCount"></span>
+                <a href="/2025/02/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2025/02/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -728,12 +728,12 @@
   <!-- JS库 sweetalert 可修改路径 -->
   <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <p><span>本文标题:</span><a href="/2021/05/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/">内存寻址</a></p>
+  <p><span>本文标题:</span><a href="/2025/02/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/">内存寻址</a></p>
   <p><span>文章作者:</span><a href="/" title="访问  的个人博客"></a></p>
-  <p><span>发布时间:</span>2021年05月20日 - 23:05</p>
+  <p><span>发布时间:</span>2025年02月20日 - 02:02</p>
   <p><span>最后更新:</span>2020年07月10日 - 23:07</p>
-  <p><span>原始链接:</span><a href="/2021/05/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" title="内存寻址">http://wangzaifa.com/2021/05/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/</a>
-    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://wangzaifa.com/2021/05/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" aria-label="复制成功！"></i></span>
+  <p><span>原始链接:</span><a href="/2025/02/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" title="内存寻址">http://wangzaifa.com/2025/02/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://wangzaifa.com/2025/02/20/%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80/" aria-label="复制成功！"></i></span>
   </p>
   <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="external nofollow" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
 </div>
@@ -793,9 +793,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/LINUX/" rel="tag"><i class="fa fa-tag"></i> LINUX</a>
-          
             <a href="/tags/OS/" rel="tag"><i class="fa fa-tag"></i> OS</a>
+          
+            <a href="/tags/LINUX/" rel="tag"><i class="fa fa-tag"></i> LINUX</a>
           
             <a href="/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="tag"><i class="fa fa-tag"></i> 内存管理</a>
           
@@ -810,8 +810,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/05/20/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%92%8C%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/" rel="next" title="时间复杂度和空间复杂度">
-                <i class="fa fa-chevron-left"></i> 时间复杂度和空间复杂度
+              <a href="/2025/02/20/PHY%E7%AE%A1%E7%90%86%E6%8E%A5%E5%8F%A3MDIO/" rel="next" title="PHY管理接口MDIO">
+                <i class="fa fa-chevron-left"></i> PHY管理接口MDIO
               </a>
             
           </div>
@@ -820,8 +820,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/05/20/%E8%B5%84%E6%BA%90%E7%9B%B8%E5%85%B3%E7%9A%84%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F/" rel="prev" title="资源相关的编程模式">
-                资源相关的编程模式 <i class="fa fa-chevron-right"></i>
+              <a href="/2025/02/20/%E5%86%85%E6%A0%B8%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E/" rel="prev" title="内核常见异常信息说明">
+                内核常见异常信息说明 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1014,7 +1014,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
