@@ -112,9 +112,9 @@
     
       <category term="OS" scheme="http://wangzaifa.com/tags/OS/"/>
     
-      <category term="LINUX" scheme="http://wangzaifa.com/tags/LINUX/"/>
-    
       <category term="内核" scheme="http://wangzaifa.com/tags/%E5%86%85%E6%A0%B8/"/>
+    
+      <category term="LINUX" scheme="http://wangzaifa.com/tags/LINUX/"/>
     
   </entry>
   
